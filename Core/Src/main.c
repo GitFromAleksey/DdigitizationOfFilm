@@ -38,7 +38,12 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+#define DI_LIMIT_SWITCH_IS_ON   LL_GPIO_IsInputPinSet(DI_LIMIT_SWITCH_GPIO_Port,\
+                                                      DI_LIMIT_SWITCH_Pin)
+#define DO_MOTOR_ON             LL_GPIO_SetOutputPin(DO_MOTOR_ON_GPIO_Port,\
+                                                      DO_MOTOR_ON_Pin)
+#define DO_MOTOR_OFF             LL_GPIO_ResetOutputPin(DO_MOTOR_ON_GPIO_Port,\
+                                                        DO_MOTOR_ON_Pin)
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -95,6 +100,17 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    if(DI_LIMIT_SWITCH_IS_ON)
+    { DO_MOTOR_ON; }
+    else
+    {
+      DO_MOTOR_OFF;
+      HAL_Delay(1000);
+    }
+    //  LL_GPIO_TogglePin(DO_MOTOR_ON_GPIO_Port, DO_MOTOR_ON_Pin);
+//    HAL_Delay(1000);
+    //LL_GPIO_SetOutputPin
+  
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -67,6 +67,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define DO_MOTOR_ON_Pin LL_GPIO_PIN_0
+#define DO_MOTOR_ON_GPIO_Port GPIOB
+#define DI_LIMIT_SWITCH_Pin LL_GPIO_PIN_1
+#define DI_LIMIT_SWITCH_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
