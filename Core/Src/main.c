@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usb_device.h"
+#include "usbd_cdc_if.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -70,7 +71,10 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  USBD_StatusTypeDef UsbStatusType;
+  uint8_t rx_buf[100];
+  uint8_t tx_buf[100];
+  #define HELLO "Hello!"
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -92,6 +96,12 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USB_DEVICE_Init();
+
+//  USBD_CDC_SetTxBuffer(&hUsbDeviceFS,
+//                              tx_buf,
+//                              100);
+//  USBD_CDC_SetRxBuffer(&hUsbDeviceFS,
+//                              rx_buf);
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -107,9 +117,11 @@ int main(void)
       DO_MOTOR_OFF;
       HAL_Delay(1000);
     }
-    //  LL_GPIO_TogglePin(DO_MOTOR_ON_GPIO_Port, DO_MOTOR_ON_Pin);
-//    HAL_Delay(1000);
-    //LL_GPIO_SetOutputPin
+    
+    //CDC_Receive_FS(rx_buf, 100);
+HAL_Delay(1000);
+    CDC_Transmit_FS(HELLO, sizeof(HELLO));
+
   
     /* USER CODE END WHILE */
 
