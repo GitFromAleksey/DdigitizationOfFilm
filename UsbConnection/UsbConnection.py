@@ -7,6 +7,8 @@ import random
 from struct import *
 from collections import namedtuple
 
+import comport
+
 LOG_FILE_NAME = 'log_'
 LOG_FILE_EXT = '.txt'
 
@@ -23,6 +25,9 @@ def LogToFile(data):
 
 
 def main():
+    serial_port = comport.SerialPort()
+    serial_port.CheckAllPorts()
+    
     LogToFile(123)
     jLink_port = ''
     ports_dict = {}
