@@ -8,6 +8,7 @@ from struct import *
 from collections import namedtuple
 
 import comport
+import filmgui
 
 LOG_FILE_NAME = 'log_'
 LOG_FILE_EXT = '.txt'
@@ -26,7 +27,8 @@ def LogToFile(data):
 
 def main():
     serial_port = comport.SerialPort()
-    serial_port.CheckAllPorts()
+##    serial_port.CheckAllPorts()
+    filmgui.FilmGui()
     
     LogToFile(123)
     jLink_port = ''
