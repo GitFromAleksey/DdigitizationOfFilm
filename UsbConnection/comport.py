@@ -1,7 +1,7 @@
 import serial
 import serial.tools.list_ports
 
-print('import', __name__)
+print('import:', __name__)
 ##------------------------------------------------------------------------------
 class SerialPort():
     def __init__(self):
@@ -11,7 +11,14 @@ class SerialPort():
     def OpenPort(self, port_name):
         try:
             print('OpenPort:', port_name)
-            self.using_port = serial.Serial(port_name)
+##            self.using_port = serial.Serial(port_name)
+            self.using_port = serial.Serial(
+                port = port_name,
+                baudrate = 9600, #115200
+                parity = serial.PARITY_NONE,
+                stopbits = serial.STOPBITS_ONE,
+                bytesize = serial.EIGHTBITS,
+                timeout = 0)
         except(OSError, serial.SerialException):
             print('Error open port:', port_name)
 
@@ -26,6 +33,10 @@ class SerialPort():
 
     def GetUsingPort(self):
         return self.using_port
+
+    def GetAllPorts(self):
+        self.UpdatePortsList()
+        return self.port_list
 
     def UpdatePortsList(self):
         '''Обновляет список доступных в системе COM портов'''

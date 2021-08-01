@@ -26,6 +26,9 @@ class FilmGui(threading.Thread):
             vals.append(item)
         self.cmbb['values'] = vals
         print(self.cmbb['values'])
+
+    def ComboBoxBind(self, calback):
+        self.cmbb.bind('<<ComboboxSelected>>', calback)
         
 
 def main():
