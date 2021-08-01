@@ -1,15 +1,18 @@
 import tkinter as tk
 from tkinter import ttk
+import threading
 
 print('import:',__name__)
-class FilmGui():
-
+class FilmGui(threading.Thread):
+    
     def __init__(self):
+        super().__init__(name = 'FilmGuiThread')
         print('FilmGui__init__()')
         self.win = tk.Tk()
         self.win.geometry('800x600')
         self.ComboBoxAdd(self.win)
 
+    def run(self):
         self.win.mainloop()
 
     def ComboBoxAdd(self, win):
@@ -27,6 +30,8 @@ class FilmGui():
 
 def main():
     filmgui = FilmGui()
+
+    print('after gui run')
     
     filmgui.ComboBoxAddItems(['1','2','3','4','5'])
     pass
