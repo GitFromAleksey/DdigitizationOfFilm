@@ -8,23 +8,43 @@ class SerialPort():
         self.using_port = None
         self.aval_ports = []
 
-    def OpenPort(self, port_name):
-        try:
-            print('OpenPort:', port_name)
-##            self.using_port = serial.Serial(port_name)
-            self.using_port = serial.Serial(
+    def SetPort(self, port_name):
+        print('SetPort:', port_name)
+        self.using_port = serial.Serial(
                 port = port_name,
                 baudrate = 9600, #115200
                 parity = serial.PARITY_NONE,
                 stopbits = serial.STOPBITS_ONE,
                 bytesize = serial.EIGHTBITS,
                 timeout = 0)
+
+    def OpenPort(self):
+        if self.using_port == None:
+            print('select port name')
+            return
+        print(self.using_port)
+        try:
+            print('OpenPort:')
+            self.using_port.open()
         except(OSError, serial.SerialException):
-            print('Error open port:', port_name)
+            print('Error open port:')
+
+##    def OpenPort(self, port_name):
+##        try:
+##            print('OpenPort:', port_name)
+####            self.using_port = serial.Serial(port_name)
+##            self.using_port = serial.Serial(
+##                port = port_name,
+##                baudrate = 9600, #115200
+##                parity = serial.PARITY_NONE,
+##                stopbits = serial.STOPBITS_ONE,
+##                bytesize = serial.EIGHTBITS,
+##                timeout = 0)
+##            self.using_port.open()
+##        except(OSError, serial.SerialException):
+##            print('Error open port:', port_name)
 
     def ClosePort(self):
-        if self.using_port == None:
-            return
         self.using_port.close()
         print('Port close:', self.using_port.port)
 

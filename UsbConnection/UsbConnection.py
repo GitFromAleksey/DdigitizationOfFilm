@@ -29,17 +29,27 @@ def LogToFile(data):
 def ComboCalback(args):
     port_name = args.widget.get()
     print('ComboCalback:', port_name)
-    serial_port.OpenPort(port_name)
-
-def main():
-    
-    gui.ComboBoxBind(ComboCalback)
-
+    serial_port.SetPort(port_name)
+## -----------------------------------------------------------------------------
+def CallbackButtonSearchPorts(args):
+    print('CallbackButtonSearchPorts press:',args)
     serial_port.CheckAllPorts()
-
     aval_ports = serial_port.GetListAvaliablePorts()#serial_port.GetAllPorts()
     gui.ComboBoxAddItems(aval_ports)
-    
+## -----------------------------------------------------------------------------
+def CallbackButtonOpenPort(args):
+    print('CallbackButtonOpenPort press:',args)
+    serial_port.OpenPort()
+## -----------------------------------------------------------------------------
+
+def main():
+
+    gui.ComboBoxBind(ComboCalback)
+    gui.ButtonSearchPortsBind(CallbackButtonSearchPorts)
+    gui.ButtonOpenPortBind(CallbackButtonOpenPort)
+
+    gui.Start()
+    print('main program exit')
 ##    LogToFile(123)
 ##    jLink_port = ''
 ##    ports_dict = {}
