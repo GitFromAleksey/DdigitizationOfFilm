@@ -34,19 +34,24 @@ def ComboCalback(args):
 def CallbackButtonSearchPorts(args):
     print('CallbackButtonSearchPorts press:',args)
     serial_port.CheckAllPorts()
-    aval_ports = serial_port.GetListAvaliablePorts()#serial_port.GetAllPorts()
+    aval_ports = serial_port.GetListAvaliablePorts()#
+##    aval_ports = serial_port.GetAllPorts()
     gui.ComboBoxAddItems(aval_ports)
 ## -----------------------------------------------------------------------------
 def CallbackButtonOpenPort(args):
     print('CallbackButtonOpenPort press:',args)
     serial_port.OpenPort()
 ## -----------------------------------------------------------------------------
-
+def CallBackSerialPortInfo(text):
+    gui.TextBoxAddText(text)
+## -----------------------------------------------------------------------------
 def main():
 
     gui.ComboBoxBind(ComboCalback)
     gui.ButtonSearchPortsBind(CallbackButtonSearchPorts)
     gui.ButtonOpenPortBind(CallbackButtonOpenPort)
+
+    serial_port.SetLoggerCallback(CallBackSerialPortInfo)
 
     gui.Start()
     print('main program exit')

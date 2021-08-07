@@ -7,9 +7,18 @@ class SerialPort():
     def __init__(self):
         self.using_port = None
         self.aval_ports = []
+        self.LoggerCallback = None
+
+    def SetLoggerCallback(self, LoggerCallback):
+        self.LoggerCallback = LoggerCallback
+
+    def Logger(self, info):
+        if self.LoggerCallback != None:
+            self.LoggerCallback(info)
+        print(info)
 
     def SetPort(self, port_name):
-        print('SetPort:', port_name)
+        self.Logger('SetPort:'+ port_name)
         self.using_port = serial.Serial(
                 port = port_name,
                 baudrate = 9600, #115200
@@ -20,33 +29,18 @@ class SerialPort():
 
     def OpenPort(self):
         if self.using_port == None:
-            print('select port name')
+            self.Logger('select port name')
             return
-        print(self.using_port)
+        self.Logger('self.using_port')
         try:
-            print('OpenPort:')
+            self.Logger('OpenPort:')
             self.using_port.open()
         except(OSError, serial.SerialException):
-            print('Error open port:')
-
-##    def OpenPort(self, port_name):
-##        try:
-##            print('OpenPort:', port_name)
-####            self.using_port = serial.Serial(port_name)
-##            self.using_port = serial.Serial(
-##                port = port_name,
-##                baudrate = 9600, #115200
-##                parity = serial.PARITY_NONE,
-##                stopbits = serial.STOPBITS_ONE,
-##                bytesize = serial.EIGHTBITS,
-##                timeout = 0)
-##            self.using_port.open()
-##        except(OSError, serial.SerialException):
-##            print('Error open port:', port_name)
+            self.Logger('Error open port:')
 
     def ClosePort(self):
         self.using_port.close()
-        print('Port close:', self.using_port.port)
+        self.Logger('Port close:'+ self.using_port.port)
 
     def GetListAvaliablePorts(self):
         return self.aval_ports
@@ -62,7 +56,8 @@ class SerialPort():
         '''Обновляет список доступных в системе COM портов'''
         self.port_list = serial.tools.list_ports.comports()
         for port in self.port_list:
-            print('Port:', port)
+            self.Logger('Port:' + str(port))
+##            print('Port:', port)
 
     def CheckAllPorts(self):
         self.UpdatePortsList()
@@ -73,19 +68,19 @@ class SerialPort():
             if self.CheckPort(port_name) == True:
                 self.aval_ports.append(port_name)
 
-        print('Avaliable ports:', self.aval_ports)
+        self.Logger('Avaliable ports:'+ str(self.aval_ports))
         return self.aval_ports
 
     def CheckPort(self, port_name):
         '''Проверка порта на занятость'''
         try:
-            print('CheckPort:', port_name)
+            self.Logger('CheckPort:'+ port_name)
             s = serial.Serial(port_name)
             s.close()
-            print('Avaliable')
+            self.Logger('Avaliable')
             return True
         except(OSError, serial.SerialException):
-            print('Not Avaliable')
+            self.Logger('Not Avaliable')
             return False
 
 ##------------------------------------------------------------------------------

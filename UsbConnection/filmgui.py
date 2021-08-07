@@ -27,6 +27,7 @@ class FilmGui():
         self.ComboBoxAdd(self.win)
         self.ButtonSearchPortsAdd(self.win)
         self.ButtonOpenPortAdd(self.win)
+        self.TextBoxAdd(self.win)
         
     def Start(self):
         self.win.mainloop()
@@ -71,7 +72,17 @@ class FilmGui():
     def ButtonOpenPortBind(self, calback):
         self.btn_open_port.bind(MOUSE_LEFT_BTN, calback)
 
+    def TextBoxAdd(self, win):
+        self.text_box = tk.Text(
+            win,
+            height = 33)
+        self.text_box.pack()
+        self.text_box.place(x = 5, y = 50)
 
+    def TextBoxAddText(self, text):
+        tb_text = self.text_box.get(1.0, tk.END)
+        tb_text = tb_text + text
+        self.text_box.insert(1.0, text+'\n')
 ##class FilmGui(threading.Thread):
 ##    
 ##    def __init__(self):
