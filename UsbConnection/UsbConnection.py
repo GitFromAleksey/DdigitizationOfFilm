@@ -33,9 +33,9 @@ def ComboCalback(args):
 ## -----------------------------------------------------------------------------
 def CallbackButtonSearchPorts(args):
     print('CallbackButtonSearchPorts press:',args)
-    serial_port.CheckAllPorts()
-    aval_ports = serial_port.GetListAvaliablePorts()#
-##    aval_ports = serial_port.GetAllPorts()
+##    serial_port.CheckAllPortsThread()
+##    aval_ports = serial_port.GetListAvaliablePorts()
+    aval_ports = serial_port.GetAllPorts()
     gui.ComboBoxAddItems(aval_ports)
 ## -----------------------------------------------------------------------------
 def CallbackButtonOpenPort(args):

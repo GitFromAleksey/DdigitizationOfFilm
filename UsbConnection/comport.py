@@ -1,9 +1,12 @@
 import serial
 import serial.tools.list_ports
+import threading
 
 print('import:', __name__)
 ##------------------------------------------------------------------------------
+##class SerialPort():
 class SerialPort():
+
     def __init__(self):
         self.using_port = None
         self.aval_ports = []
@@ -19,24 +22,43 @@ class SerialPort():
 
     def SetPort(self, port_name):
         self.Logger('SetPort:'+ port_name)
-        self.using_port = serial.Serial(
-                port = port_name,
-                baudrate = 9600, #115200
-                parity = serial.PARITY_NONE,
-                stopbits = serial.STOPBITS_ONE,
-                bytesize = serial.EIGHTBITS,
-                timeout = 0)
+        self.using_port = serial.Serial()
+        self.using_port.setPort(port_name)
+##        self.using_port = serial.Serial(
+##                port = port_name,
+##                baudrate = 9600, #115200
+##                parity = serial.PARITY_NONE,
+##                stopbits = serial.STOPBITS_ONE,
+##                bytesize = serial.EIGHTBITS,
+##                timeout = 0)
+        self.Logger('BAUDRATES:' + str(self.using_port.BAUDRATES))
+        self.Logger('BYTESIZES:' + str(self.using_port.BYTESIZES))
+        self.Logger('PARITIES:' + str(self.using_port.PARITIES))
+        self.Logger('STOPBITS:' + str(self.using_port.STOPBITS))
+        self.Logger(str(self.using_port))
 
     def OpenPort(self):
         if self.using_port == None:
             self.Logger('select port name')
             return
-        self.Logger('self.using_port')
+        self.Logger('OpenPort:' + self.using_port.port)
+        if self.using_port.isOpen():
+            self.Logger('Port:' + self.using_port.port + ' is open')
+            return
         try:
-            self.Logger('OpenPort:')
+            self.Logger('Try OpenPort:' + self.using_port.port)
             self.using_port.open()
+            self.Logger(str(self.using_port))
+            th = threading.Thread(target = self.ReadFromPort)
+            th.start()
         except(OSError, serial.SerialException):
-            self.Logger('Error open port:')
+            self.Logger('Error open port:' + str(OSError))
+
+    def ReadFromPort(self):
+        self.Logger('strart read from port')
+        while self.using_port.isOpen():
+            self.Logger(str(self.using_port.read()))
+        self.Logger('stop read from port')
 
     def ClosePort(self):
         self.using_port.close()
@@ -50,14 +72,21 @@ class SerialPort():
 
     def GetAllPorts(self):
         self.UpdatePortsList()
-        return self.port_list
+        port_list = []
+        for port_name, desc, hwid in sorted(self.port_list):
+            port_list.append(port_name)
+            self.Logger(port_name)
+        return port_list
 
     def UpdatePortsList(self):
         '''Обновляет список доступных в системе COM портов'''
         self.port_list = serial.tools.list_ports.comports()
         for port in self.port_list:
             self.Logger('Port:' + str(port))
-##            print('Port:', port)
+
+    def CheckAllPortsThread(self):
+        th = threading.Thread(target = self.CheckAllPorts)
+        th.start()
 
     def CheckAllPorts(self):
         self.UpdatePortsList()
@@ -86,17 +115,12 @@ class SerialPort():
 ##------------------------------------------------------------------------------
 def main():
     serial_port = SerialPort()
+    serial_port.GetAllPorts()
+    serial_port.SetPort('COM4')
+    serial_port.OpenPort()
+##    serial_port.CheckAllPortsThread()
 
-    port_number = input('Input com number:')
-    print(port_number)
-    port_name = 'COM' + str(port_number)
-    print(port_name)
-
-    serial_port.OpenPort(port_name)
-
-    serial_port.CheckAllPorts()
-
-    serial_port.ClosePort()
+    print('exit main')
 
 
 
