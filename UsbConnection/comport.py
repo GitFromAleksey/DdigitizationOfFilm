@@ -27,6 +27,7 @@ class SerialPort():
         self.Logger('SetPort:'+ port_name)
         self.using_port = serial.Serial()
         self.using_port.setPort(port_name)
+        self.using_port.writeTimeout = 2
 ##        self.using_port = serial.Serial(
 ##                port = port_name,
 ##                baudrate = 9600, #115200
@@ -71,7 +72,7 @@ class SerialPort():
 
     def WriteData(self, data_bytes):
         for d in data_bytes:
-            self.write_queue.put(d)
+            self.write_queue.put(bytes([d]))
 
     def WritePortThread(self):
         while self.using_port.isOpen():
@@ -144,7 +145,7 @@ def main():
     time.sleep(1)
     data_bytes = b'hello!'
     serial_port.WriteData(data_bytes)
-    time.sleep(3)
+    time.sleep(10)
     serial_port.ClosePort()
 ##    serial_port.CheckAllPortsThread()
     time.sleep(1)

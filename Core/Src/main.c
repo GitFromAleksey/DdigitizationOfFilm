@@ -61,7 +61,23 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+USBD_StatusTypeDef UsbStatusType;
+uint8_t rx_buf[100];
+uint8_t tx_buf[100];
+#define HELLO "Hello!"
 
+int8_t MY_CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
+{
+  uint32_t len = *Len;
+  uint8_t *p_rx_buf = &rx_buf[0];
+  while(len--)
+  {
+    *p_rx_buf = *Buf;
+    ++p_rx_buf;
+    ++Buf;
+  }
+  return (USBD_OK);
+}
 /* USER CODE END 0 */
 
 /**
@@ -71,10 +87,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  USBD_StatusTypeDef UsbStatusType;
-  uint8_t rx_buf[100];
-  uint8_t tx_buf[100];
-  #define HELLO "Hello!"
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -96,7 +109,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USB_DEVICE_Init();
-
+  USBD_Interface_fops_FS.Receive = MY_CDC_Receive_FS;
 //  USBD_CDC_SetTxBuffer(&hUsbDeviceFS,
 //                              tx_buf,
 //                              100);
@@ -119,8 +132,8 @@ int main(void)
     }
     
     //CDC_Receive_FS(rx_buf, 100);
-HAL_Delay(1000);
-    CDC_Transmit_FS(HELLO, sizeof(HELLO));
+//    HAL_Delay(1000);
+//    CDC_Transmit_FS(rx_buf, sizeof(HELLO));
 
   
     /* USER CODE END WHILE */

@@ -46,6 +46,8 @@ def CallbackButtonOpenPort(args):
 ## -----------------------------------------------------------------------------
 def CallbackButtonGetImage(args):
     print('CallbackButtonGetImage press:',args)
+    data_bytes = b'hello'
+    serial_port.WriteData(data_bytes)
     cam.GetImageFromUsingCam()
 ## -----------------------------------------------------------------------------
 def CallBackSerialPortInfo(text):
