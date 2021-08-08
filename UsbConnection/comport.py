@@ -1,6 +1,8 @@
+import time
 import serial
 import serial.tools.list_ports
 import threading
+import multiprocessing 
 
 print('import:', __name__)
 ##------------------------------------------------------------------------------
@@ -11,6 +13,7 @@ class SerialPort():
         self.using_port = None
         self.aval_ports = []
         self.LoggerCallback = None
+        self.write_queue = multiprocessing.Queue()
 
     def SetLoggerCallback(self, LoggerCallback):
         self.LoggerCallback = LoggerCallback
@@ -37,6 +40,9 @@ class SerialPort():
         self.Logger('STOPBITS:' + str(self.using_port.STOPBITS))
         self.Logger(str(self.using_port))
 
+    def ClosePort(self):
+        self.using_port.close()
+
     def OpenPort(self):
         if self.using_port == None:
             self.Logger('select port name')
@@ -49,16 +55,31 @@ class SerialPort():
             self.Logger('Try OpenPort:' + self.using_port.port)
             self.using_port.open()
             self.Logger(str(self.using_port))
-            th = threading.Thread(target = self.ReadFromPort)
-            th.start()
+            th_read = threading.Thread(target = self.ReadFromPort)
+            th_read.start()
+            th_write = threading.Thread(target = self.WritePortThread)
+            th_write.start()
         except(OSError, serial.SerialException):
             self.Logger('Error open port:' + str(OSError))
 
     def ReadFromPort(self):
         self.Logger('strart read from port')
         while self.using_port.isOpen():
+            time.sleep(0.01)
             self.Logger(str(self.using_port.read()))
-        self.Logger('stop read from port')
+        self.Logger('stop read from port:' + self.using_port.port)
+
+    def WriteData(self, data_bytes):
+        for d in data_bytes:
+            self.write_queue.put(d)
+
+    def WritePortThread(self):
+        while self.using_port.isOpen():
+            time.sleep(0.1)
+            while self.write_queue.qsize() > 0:
+                data = self.write_queue.get()
+                self.Logger('WritePortThread: ' + str(data))
+                self.using_port.write(data)
 
     def ClosePort(self):
         self.using_port.close()
@@ -116,10 +137,17 @@ class SerialPort():
 def main():
     serial_port = SerialPort()
     serial_port.GetAllPorts()
-    serial_port.SetPort('COM4')
+    port_name = input('Input port name:')
+    serial_port.SetPort(port_name)
     serial_port.OpenPort()
-##    serial_port.CheckAllPortsThread()
 
+    time.sleep(1)
+    data_bytes = b'hello!'
+    serial_port.WriteData(data_bytes)
+    time.sleep(3)
+    serial_port.ClosePort()
+##    serial_port.CheckAllPortsThread()
+    time.sleep(1)
     print('exit main')
 
 
