@@ -9,12 +9,14 @@ import datetime
 
 import comport
 import filmgui
+import webcam
 
 LOG_FILE_NAME = 'log_'
 LOG_FILE_EXT = '.txt'
 
 serial_port = comport.SerialPort()
 gui = filmgui.FilmGui()
+cam = webcam.Cam()
 
 ## -----------------------------------------------------------------------------
 def LogToFile(data):
@@ -42,6 +44,10 @@ def CallbackButtonOpenPort(args):
     print('CallbackButtonOpenPort press:',args)
     serial_port.OpenPort()
 ## -----------------------------------------------------------------------------
+def CallbackButtonGetImage(args):
+    print('CallbackButtonGetImage press:',args)
+    cam.GetImageFromUsingCam()
+## -----------------------------------------------------------------------------
 def CallBackSerialPortInfo(text):
     gui.TextBoxAddText(text)
 ## -----------------------------------------------------------------------------
@@ -50,8 +56,13 @@ def main():
     gui.ComboBoxBind(ComboCalback)
     gui.ButtonSearchPortsBind(CallbackButtonSearchPorts)
     gui.ButtonOpenPortBind(CallbackButtonOpenPort)
+    gui.ButtonGetImageBind(CallbackButtonGetImage)
 
     serial_port.SetLoggerCallback(CallBackSerialPortInfo)
+
+    cam.SetUsingCam(0)
+    cam.SetLoggerCallback(CallBackSerialPortInfo)
+    cam.GetImageFromUsingCam()
 
     gui.Start()
     print('main program exit')

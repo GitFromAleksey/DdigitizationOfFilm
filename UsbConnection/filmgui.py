@@ -19,6 +19,9 @@ def CallbackButtonSearchPorts(args):
 def CallbackButtonOpenPort(args):
     print('CallbackButtonOpenPort press:',args)
 
+def CallbackButtonGetImage(args):
+    print('CallbackButtonGetImage press:',args)
+
 class FilmGui():
     
     def __init__(self):
@@ -27,6 +30,7 @@ class FilmGui():
         self.ComboBoxAdd(self.win)
         self.ButtonSearchPortsAdd(self.win)
         self.ButtonOpenPortAdd(self.win)
+        self.ButtonGetImage(self.win)
         self.TextBoxAdd(self.win)
         
     def Start(self):
@@ -72,6 +76,18 @@ class FilmGui():
     def ButtonOpenPortBind(self, calback):
         self.btn_open_port.bind(MOUSE_LEFT_BTN, calback)
 
+    def ButtonGetImage(self, win):
+        self.btn_get_image = tk.Button(
+            win,
+            text = 'GET IMAGE',
+            bg = 'blue',
+            fg = 'yellow')
+        self.btn_get_image.pack()
+        self.btn_get_image.place(x = 320, y = 5, width = 100, height = 25,)
+
+    def ButtonGetImageBind(self, calback):
+        self.btn_get_image.bind(MOUSE_LEFT_BTN, calback)
+
     def TextBoxAdd(self, win):
         self.text_box = tk.Text(
             win,
@@ -83,6 +99,7 @@ class FilmGui():
         tb_text = self.text_box.get(1.0, tk.END)
         tb_text = tb_text + text
         self.text_box.insert(1.0, text+'\n')
+
 ##class FilmGui(threading.Thread):
 ##    
 ##    def __init__(self):
@@ -118,6 +135,7 @@ def main():
     filmgui.ComboBoxBind(CalbackCombobox)
     filmgui.ButtonSearchPortsBind(CallbackButtonSearchPorts)
     filmgui.ButtonOpenPortBind(CallbackButtonOpenPort)
+    filmgui.ButtonGetImageBind(CallbackButtonGetImage)
     
     filmgui.ComboBoxAddItems(['1','2','3','4','5'])
 

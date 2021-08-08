@@ -1,7 +1,8 @@
 import time
 import cv2.cv2 as cv
+import threading
 
-print ('cv.__version__:',cv.__version__)
+print('import:', __name__,', cv.__version__:',cv.__version__)
 
 
 class Cam():
@@ -9,7 +10,7 @@ class Cam():
     def __init__(self):
         self.cams_dict = {}
         self.using_cam = None
-        self.SearchCams()
+        self.LoggerCallback = None
 
     def __del__(self):
         cv.destroyAllWindows()
@@ -19,12 +20,16 @@ class Cam():
             cam = cv.VideoCapture(i)
             if cam.isOpened():
                 self.cams_dict[i] = cam
-                print(cam.getBackendName(), i)
+                self.Logger('Cam: ' + cam.getBackendName() + ', num: ' + str(i))
 
     def SetUsingCam(self, cam_num):
-        self.using_cam = self.cams_dict[cam_num]
+        self.Logger('Wait! Set cam num: ' + str(cam_num))
+##        self.using_cam = self.cams_dict[cam_num]
+        self.using_cam = cv.VideoCapture(cam_num)
+        self.Logger('Set cam num: ' + str(cam_num) + ' is set')
 
     def GetImageFromUsingCam(self):
+        self.Logger('GetImageFromUsingCam')
         cam = self.using_cam
         ret, img = cam.read()
         if ret:
@@ -38,12 +43,19 @@ class Cam():
             ret, img = cam.read()
             cv.imshow(cam.getBackendName(), img)
             cv.imwrite(cam.getBackendName() + str(key) + '.jpg',img)
+    
+    def SetLoggerCallback(self, LoggerCallback):
+        self.LoggerCallback = LoggerCallback
 
+    def Logger(self, info):
+        if self.LoggerCallback != None:
+            self.LoggerCallback(info)
+        print(info)
 
 
 def main():
     cams = Cam()
-
+##    cams.SearchCams()
     cams.SetUsingCam(1)
 
     for i in range(100):
