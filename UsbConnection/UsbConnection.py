@@ -67,6 +67,9 @@ def main():
     cam.GetImageFromUsingCam()
 
     gui.Start()
+    
+    cam.__del__()
+    serial_port.__del__()
     print('main program exit')
 ##    LogToFile(123)
 ##    jLink_port = ''
